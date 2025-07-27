@@ -67,12 +67,14 @@ def parallel_search():
     if not param_grid or not input_ok:
         return jsonify({'error': 'param_grid y datos de predicción requeridos'}), 400
     X_input = [[data[f] for f in features]]
+
     if not ray.is_initialized():
         ray.init()
-    # Esperar a que haya al menos un nodo worker (2 nodos en total, contando el head)
-    ray.wait_for_nodes(num_nodes=2, timeout=60)  # Espera hasta 60 segundos
-    if len(ray.nodes()) < 2:
+
+    # Esperar a que haya al menos un nodo worker (3 nodos en total, contando el head)
+    if len(ray.nodes()) < 3:
         return jsonify({'error': 'No hay suficientes nodos workers disponibles'}), 503
+    
     start = time.time()
     best_params, best_score, best_model = run_ray_parallel_grid_search(X_train.values, y_train.values, param_grid)
     elapsed = time.time() - start

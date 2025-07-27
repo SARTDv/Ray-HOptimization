@@ -5,7 +5,7 @@ from SequencialSearch import run_sequential_grid_search
 from Ray.ParalelDisSearch import run_ray_parallel_grid_search
 import ray
 import time
-
+import subprocess
 
 
 #hiperparametros para el grid search de prueba
@@ -16,7 +16,33 @@ param_grid_mlp = {
     'alpha': [ 0.001, 0.01],                          # Parámetro de regularización L2
     'max_iter': [50,100,200]                                   # Número máximo de iteraciones
 }
-    
+#comando correr ray 
+cmd = [
+    "ray",
+    "start",
+    "--head",
+    "--port=10001",
+    "--dashboard-host=0.0.0.0"
+]
+
+#funcion auxiliar
+def ray_esta_corriendo():
+    try:
+        result = subprocess.run(['ray', 'status'], 
+                              capture_output=True, 
+                              text=True, 
+                              timeout=5)
+        return result.returncode == 0
+    except (subprocess.TimeoutExpired, FileNotFoundError):
+        return False
+
+# Usar
+if ray_esta_corriendo():
+    print("Ray está corriendo")
+else:
+    print("Ray no está corriendo")
+
+
 
 app = Flask(__name__)
 CORS(app)
@@ -68,13 +94,8 @@ def parallel_search():
         return jsonify({'error': 'param_grid y datos de predicción requeridos'}), 400
     X_input = [[data[f] for f in features]]
 
-    if not ray.is_initialized():
-        ray.init(
-            address='0.0.0.0:10001',  # Escucha en todas las interfaces
-            dashboard_host='0.0.0.0',      # Dashboard accesible remotamente
-            dashboard_port=8265,
-            include_dashboard=True
-        )
+    if not ray_esta_corriendo():
+        subprocess.run(cmd, check=True)
 
     # Esperar a que haya al menos un nodo worker (3 nodos en total, contando el head)
     if len(ray.nodes()) < 3:
@@ -94,20 +115,13 @@ def parallel_search():
 
 @app.route('/ray-status', methods=['GET'])
 def ray_status():
-    if not ray.is_initialized():
-        ray.init(
-        address='0.0.0.0:10001',  # Escucha en todas las interfaces
-        dashboard_host='0.0.0.0',      # Dashboard accesible remotamente
-        dashboard_port=8265,
-        include_dashboard=True
-        )
+    if not ray_esta_corriendo():
+        subprocess.run(cmd, check=True)
     return jsonify(ray.nodes())
 
 if __name__ == '__main__':
-    ray.init(
-    address='0.0.0.0:10001',  # Escucha en todas las interfaces
-    dashboard_host='0.0.0.0',      # Dashboard accesible remotamente
-    dashboard_port=8265,
-    include_dashboard=True
-    )
+    subprocess.run(cmd, check=True)
     app.run(host='0.0.0.0', port=5000, debug=True)
+
+
+

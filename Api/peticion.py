@@ -10,8 +10,8 @@ param_grid = {
     "hidden_layer_sizes": [[5,10], [17,5,20]],
     "activation": ["relu","tanh"],
     "solver": ["adam", "sgd"],
-    "alpha": [0.001],
-    "max_iter": [50,100]
+    "alpha": [0.001,0.1,0.01],
+    "max_iter": [50,100,200]
 }
 payload = {
     "param_grid": param_grid,
@@ -31,6 +31,6 @@ payload = {
 resp = requests.post(f"{BASE}/sequential-search", json=payload)
 print(resp.text)
 
-# print("\n--- Parallel Search & Predict ---")
-# resp = requests.post(f"{BASE}/parallel-search", json=payload)
-# print(resp.text)
+print("\n--- Parallel Search & Predict ---")
+resp = requests.post(f"{BASE}/parallel-search", json=payload)
+print(resp.text)

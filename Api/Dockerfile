@@ -22,6 +22,7 @@ RUN pip install ray
 
 # Exponer el puerto de Flask
 EXPOSE 5000
+EXPOSE 6379
 
-# Comando para ejecutar la API
-CMD ["python", "app.py"]
+# Iniciar servidor Ray en el puerto 6379
+CMD ["/start.sh"]

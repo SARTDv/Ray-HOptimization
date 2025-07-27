@@ -15,10 +15,10 @@ start_worker() {
     echo "Conectando WORKER a HEAD $HEAD_IP"
 
     while true; do
-        # Verifica si el puerto 6379 del head está abierto (head disponible)
-        if nc -z $HEAD_IP 6379; then
+        # Verifica si el puerto 10001 del head está abierto (head disponible)
+        if nc -z $HEAD_IP 10001; then
             echo "HEAD accesible. Iniciando conexión Ray..."
-            ray start --address="$HEAD_IP:6379"
+            ray start --address="$HEAD_IP:10001"
             break
         else
             echo "HEAD no disponible. Reintentando en 5 segundos..."

@@ -69,7 +69,12 @@ def parallel_search():
     X_input = [[data[f] for f in features]]
 
     if not ray.is_initialized():
-        ray.init()
+        ray.init(
+            address='0.0.0.0:10001',  # Escucha en todas las interfaces
+            dashboard_host='0.0.0.0',      # Dashboard accesible remotamente
+            dashboard_port=8265,
+            include_dashboard=True
+        )
 
     # Esperar a que haya al menos un nodo worker (3 nodos en total, contando el head)
     if len(ray.nodes()) < 3:
@@ -90,9 +95,19 @@ def parallel_search():
 @app.route('/ray-status', methods=['GET'])
 def ray_status():
     if not ray.is_initialized():
-        ray.init()
+        ray.init(
+        address='0.0.0.0:10001',  # Escucha en todas las interfaces
+        dashboard_host='0.0.0.0',      # Dashboard accesible remotamente
+        dashboard_port=8265,
+        include_dashboard=True
+        )
     return jsonify(ray.nodes())
 
 if __name__ == '__main__':
-    ray.init()
+    ray.init(
+    address='0.0.0.0:10001',  # Escucha en todas las interfaces
+    dashboard_host='0.0.0.0',      # Dashboard accesible remotamente
+    dashboard_port=8265,
+    include_dashboard=True
+    )
     app.run(host='0.0.0.0', port=5000, debug=True)

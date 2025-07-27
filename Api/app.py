@@ -69,6 +69,10 @@ def parallel_search():
     X_input = [[data[f] for f in features]]
     if not ray.is_initialized():
         ray.init()
+    # Esperar a que haya al menos un nodo worker (2 nodos en total, contando el head)
+    ray.wait_for_nodes(num_nodes=2, timeout=60)  # Espera hasta 60 segundos
+    if len(ray.nodes()) < 2:
+        return jsonify({'error': 'No hay suficientes nodos workers disponibles'}), 503
     start = time.time()
     best_params, best_score, best_model = run_ray_parallel_grid_search(X_train.values, y_train.values, param_grid)
     elapsed = time.time() - start
@@ -78,7 +82,7 @@ def parallel_search():
         'best_score': best_score,
         'search_time': elapsed,
         'prediction': int(pred[0]),
-        'nodes_used': ray.nodes(),
+        'nodes_used': len(ray.nodes()),
     })
 
 @app.route('/ray-status', methods=['GET'])

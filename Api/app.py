@@ -94,7 +94,7 @@ def parallel_search():
 
 @app.route('/ray-status', methods=['GET'])
 def ray_status():
-    return jsonify(ray.nodes())
+    return "ni idea"
 
 if __name__ == '__main__':
     subprocess.run(cmd, check=True)

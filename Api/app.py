@@ -25,24 +25,6 @@ cmd = [
     "--dashboard-host=0.0.0.0"
 ]
 
-#funcion auxiliar
-def ray_esta_corriendo():
-    try:
-        result = subprocess.run(['ray', 'status'], 
-                              capture_output=True, 
-                              text=True, 
-                              timeout=5)
-        return result.returncode == 0
-    except (subprocess.TimeoutExpired, FileNotFoundError):
-        return False
-
-# Usar
-if ray_esta_corriendo():
-    print("Ray está corriendo")
-else:
-    print("Ray no está corriendo")
-
-
 
 app = Flask(__name__)
 CORS(app)
@@ -94,9 +76,6 @@ def parallel_search():
         return jsonify({'error': 'param_grid y datos de predicción requeridos'}), 400
     X_input = [[data[f] for f in features]]
 
-    if not ray_esta_corriendo():
-        subprocess.run(cmd, check=True)
-
     # Esperar a que haya al menos un nodo worker (3 nodos en total, contando el head)
     if len(ray.nodes()) < 3:
         return jsonify({'error': 'No hay suficientes nodos workers disponibles'}), 503
@@ -115,13 +94,11 @@ def parallel_search():
 
 @app.route('/ray-status', methods=['GET'])
 def ray_status():
-    if not ray_esta_corriendo():
-        subprocess.run(cmd, check=True)
     return jsonify(ray.nodes())
 
 if __name__ == '__main__':
     subprocess.run(cmd, check=True)
-    app.run(host='0.0.0.0', port=5000, debug=True)
+    app.run(host='0.0.0.0', port=5000, debug=True, use_reloader=False)
 
 
 

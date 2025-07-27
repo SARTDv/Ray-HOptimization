@@ -17,7 +17,7 @@ param_grid_mlp = {
     'max_iter': [50,100,200]                                   # Número máximo de iteraciones
 }
 #comando correr ray 
-cmd = [
+rayinit = [
     "ray",
     "start",
     "--head",
@@ -25,6 +25,10 @@ cmd = [
     "--dashboard-host=0.0.0.0"
 ]
 
+raystatus = [
+    "ray",
+    "status"
+]
 
 app = Flask(__name__)
 CORS(app)
@@ -75,11 +79,8 @@ def parallel_search():
     if not param_grid or not input_ok:
         return jsonify({'error': 'param_grid y datos de predicción requeridos'}), 400
     X_input = [[data[f] for f in features]]
-
-    # Esperar a que haya al menos un nodo worker (3 nodos en total, contando el head)
-    if len(ray.nodes()) < 3:
-        return jsonify({'error': 'No hay suficientes nodos workers disponibles'}), 503
-    
+    #imprimir el estado de ray
+    status = subprocess.run(raystatus, check=True, text=True, capture_output=True)
     start = time.time()
     best_params, best_score, best_model = run_ray_parallel_grid_search(X_train.values, y_train.values, param_grid)
     elapsed = time.time() - start
@@ -89,15 +90,15 @@ def parallel_search():
         'best_score': best_score,
         'search_time': elapsed,
         'prediction': int(pred[0]),
-        'nodes_used': len(ray.nodes()),
+        'ray_status': status.stdout,
     })
 
 @app.route('/ray-status', methods=['GET'])
 def ray_status():
-    return "ni idea"
+    return subprocess.run(raystatus, check=True, text=True, capture_output=True).stdout
 
 if __name__ == '__main__':
-    subprocess.run(cmd, check=True)
+    subprocess.run(rayinit, check=True)
     app.run(host='0.0.0.0', port=5000, debug=True, use_reloader=False)
 
 

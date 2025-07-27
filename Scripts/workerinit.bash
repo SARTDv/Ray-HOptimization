@@ -26,4 +26,4 @@ cd /home/ubuntu/Ray-HOptimization/Scripts
 
 chmod +x ./rayinit.sh
 # Ejecuta rayinit.sh como worker, pasando la IP privada del head
-./rayinit.sh worker 10.0.135.156
+./rayinit.sh 10.0.135.156

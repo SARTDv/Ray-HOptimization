@@ -7,7 +7,7 @@ import ray
 import time
 import subprocess
 
-ray.init()
+ray.init(address="auto")
 #hiperparametros para el grid search de prueba
 param_grid_mlp = {
     'hidden_layer_sizes': [(12, 7), (15, 10, 5)], # Diferentes arquitecturas de capas ocultas
@@ -72,7 +72,7 @@ def parallel_search():
         return jsonify({'error': 'param_grid y datos de predicción requeridos'}), 400
     X_input = [[data[f] for f in features]]
     #imprimir el estado de ray
-    status = subprocess.run(raystatus, check=True, text=True, capture_output=True)
+    status = len(ray.nodes())
     start = time.time()
     best_params, best_score, best_model = run_ray_parallel_grid_search(X_train.values, y_train.values, param_grid)
     elapsed = time.time() - start
@@ -82,7 +82,7 @@ def parallel_search():
         'best_score': best_score,
         'search_time': elapsed,
         'prediction': int(pred[0]),
-        'ray_status': status.stdout,
+        'nodes_used': status,
     })
 
 @app.route('/ray-status', methods=['GET'])

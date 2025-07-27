@@ -9,10 +9,10 @@ start_worker() {
     echo "Conectando WORKER desde $PRIVATE_IP a HEAD $HEAD_IP"
 
     while true; do
-        echo "Intentando conectar a HEAD $HEAD_IP:10001..."
+        echo "Intentando conectar a HEAD $HEAD_IP:6379..."
         
         # Intenta conectar directamente a Ray
-        ray start --address="$HEAD_IP:10001"
+        ray start --address="$HEAD_IP:6379"
         
         # Verifica si la conexión fue exitosa
         if [ $? -eq 0 ]; then
@@ -26,31 +26,6 @@ start_worker() {
         fi
     done
 
-    echo "Worker conectado. Iniciando monitoreo de conexión..."
-
-    # Loop para verificar conexión y reconectar si es necesario
-    while true; do
-        # Verifica si Ray sigue corriendo
-        ray status &>/dev/null
-        if [ $? -ne 0 ]; then
-            echo "⚠ Conexión Ray perdida. Reintentando conexión..."
-            ray stop &>/dev/null
-            sleep 3
-            
-            # Reintentar conexión
-            echo "Reconectando a HEAD $HEAD_IP:10001..."
-            ray start --address="$HEAD_IP:10001"
-            
-            if [ $? -eq 0 ]; then
-                echo "✓ Reconexión exitosa"
-            else
-                echo "✗ Falló la reconexión. Continuando intentos..."
-            fi
-        else
-            echo "✓ Conexión Ray activa ($(date))"
-        fi
-        sleep 10  # Revisa cada 10 segundos
-    done
 }
 
 # Verificar argumentos

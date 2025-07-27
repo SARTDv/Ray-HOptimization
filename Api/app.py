@@ -7,7 +7,7 @@ import ray
 import time
 import subprocess
 
-
+ray.init()
 #hiperparametros para el grid search de prueba
 param_grid_mlp = {
     'hidden_layer_sizes': [(12, 7), (15, 10, 5)], # Diferentes arquitecturas de capas ocultas
@@ -16,14 +16,6 @@ param_grid_mlp = {
     'alpha': [ 0.001, 0.01],                          # Parámetro de regularización L2
     'max_iter': [50,100,200]                                   # Número máximo de iteraciones
 }
-#comando correr ray 
-rayinit = [
-    "ray",
-    "start",
-    "--head",
-    "--port=10001",
-    "--dashboard-host=0.0.0.0"
-]
 
 raystatus = [
     "ray",
@@ -98,7 +90,6 @@ def ray_status():
     return subprocess.run(raystatus, check=True, text=True, capture_output=True).stdout
 
 if __name__ == '__main__':
-    subprocess.run(rayinit, check=True)
     app.run(host='0.0.0.0', port=5000, debug=True, use_reloader=False)
 
 

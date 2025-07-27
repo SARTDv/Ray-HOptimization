@@ -22,4 +22,5 @@ pip3 install -r requirements.txt
 pip3 install ray
 
 # Ejecutar servidor Flask
+ray start --head --port=6379
 python3 app.py 

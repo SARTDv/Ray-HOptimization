@@ -20,10 +20,9 @@ python3 -m venv venv
 source venv/bin/activate
 # Instalar las dependencias del proyecto
 pip3 install -r requirements.txt
-pip3 install ray
+pip3 install ray[client]
 
 cd /home/ubuntu/Ray-HOptimization/Scripts
 
-chmod +x ./rayinit.sh
 # Ejecuta rayinit.sh como worker, pasando la IP privada del head
-./rayinit.sh 10.0.135.156
+python workerconect.py 

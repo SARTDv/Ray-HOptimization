@@ -72,6 +72,7 @@ def parallel_search():
         return jsonify({'error': 'param_grid y datos de predicción requeridos'}), 400
     X_input = [[data[f] for f in features]]
     #imprimir el estado de ray
+    ray.init(address="auto")
     status = len(ray.nodes())
     start = time.time()
     best_params, best_score, best_model = run_ray_parallel_grid_search(X_train.values, y_train.values, param_grid)
@@ -85,9 +86,6 @@ def parallel_search():
         'nodes_used': status,
     })
 
-@app.route('/ray-status', methods=['GET'])
-def ray_status():
-    return subprocess.run(raystatus, check=True, text=True, capture_output=True).stdout
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True, use_reloader=False)

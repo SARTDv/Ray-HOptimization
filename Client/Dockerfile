@@ -5,13 +5,13 @@ FROM node:24.0.1-alpine
 WORKDIR /app
 
 # Copia los archivos de configuración del package manager primero
-COPY Client/package.json Client/package-lock.json* Client/pnpm-lock.yaml* Client/yarn.lock* ./
+COPY package.json package-lock.json* pnpm-lock.yaml* yarn.lock* ./
 
 # Instala las dependencias
 RUN npm install
 
 # Copia el resto de los archivos de la aplicación
-COPY Client/ .
+COPY . .
 
 # Expone el puerto que usa Vite
 EXPOSE 5173

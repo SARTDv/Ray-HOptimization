@@ -7,7 +7,6 @@ import ray
 import time
 import subprocess
 
-# Reemplaza ray.init(address="auto",ignore_reinit_error=True) con:
 max_retries = 10
 retry_delay = 5
 for _ in range(max_retries):

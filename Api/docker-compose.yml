@@ -1,4 +1,4 @@
-version: '3.8'
+
 
 services:
   head:
@@ -8,6 +8,7 @@ services:
     ports:
       - "5000:5000"  # Puerto de Flask
       - "6379:6379"  # Puerto de Ray
+      - "8265:8265" # Puerto de Ray Dashboard
     networks:
       - ray-network
     environment:

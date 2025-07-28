@@ -31,6 +31,6 @@ payload = {
 resp = requests.post(f"{BASE}/sequential-search", json=payload)
 print(resp.text)
 
-print("\n--- Parallel Search & Predict ---")
-resp = requests.post(f"{BASE}/parallel-search", json=payload)
-print(resp.text)
+#print("\n--- Parallel Search & Predict ---")
+#resp = requests.post(f"{BASE}/parallel-search", json=payload)
+#print(resp.text)

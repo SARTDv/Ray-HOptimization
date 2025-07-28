@@ -1,0 +1,20 @@
+FROM python:3.10-slim
+
+WORKDIR /app
+
+# Instalar dependencias del sistema
+RUN apt-get update && apt-get install -y \
+    git \
+    && rm -rf /var/lib/apt/lists/*
+
+# Clonar el repositorio
+RUN git clone https://github.com/SARTDv/Ray-HOptimization.git .
+
+# Instalar dependencias de Python
+RUN pip install --no-cache-dir -r Api/requirements.txt
+RUN pip install --no-cache-dir ray
+
+WORKDIR /app/Api
+
+# Comando para iniciar el head node y Flask
+CMD ray start --head --port=6379 --node-ip-address=0.0.0.0 && python app.py

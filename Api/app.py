@@ -7,7 +7,19 @@ import ray
 import time
 import subprocess
 
-ray.init(address="auto",ignore_reinit_error=True)
+# Reemplaza ray.init(address="auto",ignore_reinit_error=True) con:
+max_retries = 10
+retry_delay = 5
+for _ in range(max_retries):
+    try:
+        ray.init(address="auto", ignore_reinit_error=True)
+        break
+    except ConnectionError:
+        print(f"Esperando a que el cluster de Ray esté disponible... (reintento en {retry_delay} segundos)")
+        time.sleep(retry_delay)
+else:
+    raise RuntimeError("No se pudo conectar al cluster de Ray después de varios intentos")
+
 #hiperparametros para el grid search de prueba
 param_grid_mlp = {
     'hidden_layer_sizes': [(12, 7), (15, 10, 5)], # Diferentes arquitecturas de capas ocultas
@@ -89,6 +101,3 @@ def parallel_search():
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=False, use_reloader=False)
-
-
-

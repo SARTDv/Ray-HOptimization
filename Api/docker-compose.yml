@@ -1,0 +1,55 @@
+version: '3.8'
+
+services:
+  head:
+    build:
+      context: .
+      dockerfile: Dockerfile.head
+    ports:
+      - "5000:5000"  # Puerto de Flask
+      - "6379:6379"  # Puerto de Ray
+    networks:
+      - ray-network
+    environment:
+      - RAY_IP=head
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 2G
+
+  worker1:
+    build:
+      context: .
+      dockerfile: Dockerfile.worker
+    networks:
+      - ray-network
+    environment:
+      - RAY_IP=head
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 1G
+    depends_on:
+      - head
+
+  worker2:
+    build:
+      context: .
+      dockerfile: Dockerfile.worker
+    networks:
+      - ray-network
+    environment:
+      - RAY_IP=head
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 1G
+    depends_on:
+      - head
+
+networks:
+  ray-network:
+    driver: bridge

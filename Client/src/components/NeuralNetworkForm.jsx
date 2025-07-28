@@ -214,8 +214,8 @@ function NeuralNetworkForm() {
             <Brain className="h-6 w-6 text-white" />
           </div>
           <div>
-            <h2 className="text-2xl font-semibold text-gray-900">Configuración del Modelo</h2>
-            <p className="text-gray-600">Define los parámetros para entrenar tu modelo</p>
+            <h2 className="text-2xl font-semibold text-gray-900">Configuración de busqueda</h2>
+            <p className="text-gray-600">Define el espacio de busqueda de hiperparametros para el modelo</p>
           </div>
         </div>
 
@@ -451,7 +451,7 @@ function NeuralNetworkForm() {
           </div>
           <div>
             <h2 className="text-2xl font-semibold text-gray-900">Datos para Predicción</h2>
-            <p className="text-gray-600">Ingrese los valores para realizar la predicción</p>
+            <p className="text-gray-600">Ingrese los valores para realizar una predicción de prueba</p>
           </div>
         </div>
 

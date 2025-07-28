@@ -16,9 +16,9 @@ function App() {
             </div>
             <div>
               <h1 className="text-2xl font-bold text-gray-900">
-                Red Neuronal IA
+                Hyperparameter Optimization with Ray
               </h1>
-              <p className="text-sm text-gray-600">Interfaz para predicciones y entrenamiento de modelos</p>
+              <p className="text-sm text-gray-600">Interfaz para busqueda de hiperparametros y pruebas de modelos de ML</p>
             </div>
           </div>
         </div>
@@ -38,7 +38,7 @@ function App() {
                     : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
                 }`}
               >
-                Modo Distribuido
+                Modo Distribuido/Paralelo
               </button>
               <button
                 onClick={() => setMode('secuencial')}

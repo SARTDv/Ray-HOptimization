@@ -193,8 +193,8 @@ function NeuralNetworkForm() {
     const requestData = normalizeAndPrepareData(formData);
     
     console.log('Datos para enviar:', requestData);
-    
-    api.post('/sequential-search', requestData)
+    const endpoint = mode === 'distribuido' ? '/parallel-search' : '/sequential-search';
+    api.post(endpoint, requestData)
       .then(response => {
         console.log('Respuesta del servidor:', response);
         setIsProcessing(false);

@@ -56,7 +56,7 @@ function App() {
 
         {/* Tab Content - Now stacked vertically */}
         <div className="space-y-8">
-          <NeuralNetworkForm/>
+          <NeuralNetworkForm mode={mode}/>
         </div>
       </main>
     </div>

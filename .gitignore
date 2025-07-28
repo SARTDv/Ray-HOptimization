@@ -39,3 +39,4 @@ Thumbs.db
 # Others
 *.swp
 *.swo
+pnpm-lock.yaml
